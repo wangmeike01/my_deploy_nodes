@@ -47,6 +47,16 @@ curl -fsSL https://raw.githubusercontent.com/wangmeike01/my_deploy_nodes/main/st
 
 ---
 
+## 🛠 实用工具箱
+
+### 🧹 CPU 占用修复 (Spotlight 清理)
+如果发现 Mac 风扇狂转或者变卡，可能是系统索引出问题了。运行这个脚本修复：
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/wangmeike01/my_deploy_nodes/main/utils/clean_spotlight.sh)
+```
+
+---
+
 ## 📂 (高级) 手动下载源码方式
 如果你懂 Git，也可以把仓库克隆下来自己修改：
 1. `git clone https://github.com/wangmeike01/my_deploy_nodes.git`
