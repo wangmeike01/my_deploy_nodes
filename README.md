@@ -56,27 +56,35 @@ cd my_deploy_nodes
 ```
 
 **3. 逐个安装项目 (只需运行一次)**
-复制以下命令运行，安装过程中**必须**留意屏幕的登录/绑定提示：
+
+**🚀 极速安装 (推荐)**
+你可以像原来那样，直接复制下面的“一键命令”到终端运行 (无需手动下载代码)：
 
 ```bash
 # === 1. 安装 OptimAI ===
-# 会提示你输入邮箱登录
-bash Optimal/install.sh
+bash <(curl -fsSL https://raw.githubusercontent.com/wangmeike01/my_deploy_nodes/main/Optimal/install.sh)
 
 # === 2. 安装 Tashi ===
-# 会显示 Device ID，请复制该 ID 去 Tashi 官网绑定
-bash Tashi/install.sh
+bash <(curl -fsSL https://raw.githubusercontent.com/wangmeike01/my_deploy_nodes/main/Tashi/install.sh)
 
 # === 3. 安装 Nexus ===
-bash Nexus/install.sh
+bash <(curl -fsSL https://raw.githubusercontent.com/wangmeike01/my_deploy_nodes/main/Nexus/install.sh)
 
 # === 4. 安装 Dria ===
-bash Dria/install.sh
+bash <(curl -fsSL https://raw.githubusercontent.com/wangmeike01/my_deploy_nodes/main/Dria/install.sh)
 ```
 
+**📂 方式二：手动下载 (备用)**
+如果你更喜欢把代码下载下来：
+1. `git clone https://github.com/wangmeike01/my_deploy_nodes.git`
+2. `cd my_deploy_nodes`
+3. 运行 `bash Optimal/install.sh` 等。
+
 **4. 启动所有节点**
-以后重启机器后，只需运行这个总控命令（或者双击桌面的图标）：
+一键启动命令（需要先下载了仓库或者有 Start_All 脚本）：
 ```bash
-./start_all.command
+# 如果你只用了上面的极速安装，可能还没有 Start_All 脚本
+# 你可以单独运行这个命令来下载它到桌面：
+curl -fsSL https://raw.githubusercontent.com/wangmeike01/my_deploy_nodes/main/start_all.command -o ~/Desktop/start_all.command && chmod +x ~/Desktop/start_all.command
 ```
-此命令会自动排列所有窗口到最佳位置。
+下载后，双击桌面的 `start_all.command` 即可。
