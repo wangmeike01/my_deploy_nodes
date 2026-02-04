@@ -64,30 +64,30 @@ else
 fi
 
 # 2.2 Dria (取代原版位置)
-if [ -f "$DESKTOP_DIR/My_Dria.command" ]; then
-    open "$DESKTOP_DIR/My_Dria.command"
+if [ -f "$DESKTOP_DIR/dria_start.command" ]; then
+    open "$DESKTOP_DIR/dria_start.command"
     sleep 2
-    arrange_window "My_Dria" $((x1+upper_item_width+spacing+upper_item_width/2)) $y1 $wai_width $wai_height
+    arrange_window "dria_start" $((x1+upper_item_width+spacing+upper_item_width/2)) $y1 $wai_width $wai_height
 else
-     echo "⚠️ 未找到 My_Dria.command，请先运行/安装 Dria"
+     echo "⚠️ 未找到 dria_start.command，请先运行/安装 Dria"
 fi
 
 # 2.3 Nexus
-if [ -f "$DESKTOP_DIR/My_Nexus.command" ]; then
-    open "$DESKTOP_DIR/My_Nexus.command"
+if [ -f "$DESKTOP_DIR/nexus.command" ]; then
+    open "$DESKTOP_DIR/nexus.command"
     sleep 2
-    arrange_window "My_Nexus" $x1 $nexus_ritual_y $lower_item_width $nexus_ritual_height
+    arrange_window "nexus" $x1 $nexus_ritual_y $lower_item_width $nexus_ritual_height
 else
-     echo "⚠️ 未找到 My_Nexus.command，请先运行/安装 Nexus"
+     echo "⚠️ 未找到 nexus.command，请先运行/安装 Nexus"
 fi
 
 # 2.4 OptimAI
-if [ -f "$DESKTOP_DIR/My_Optimal.command" ]; then
-    open "$DESKTOP_DIR/My_Optimal.command"
+if [ -f "$DESKTOP_DIR/Optimai.command" ]; then
+    open "$DESKTOP_DIR/Optimai.command"
     # OptimAI 放在右下角
-    arrange_window "My_Optimal" $((x1+lower_item_width+spacing)) $nexus_ritual_y $lower_item_width $nexus_ritual_height
+    arrange_window "Optimai" $((x1+lower_item_width+spacing)) $nexus_ritual_y $lower_item_width $nexus_ritual_height
 else
-     echo "⚠️ 未找到 My_Optimal.command，请先运行/安装 Optimal"
+     echo "⚠️ 未找到 Optimai.command，请先运行/安装 Optimal"
 fi
 
 echo "✅ 所有任务已执行。"
