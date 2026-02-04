@@ -301,41 +301,49 @@ check_nat() {
 
 check_warnings() {
 	if [[ "$ERRORS" -gt 0 ]]; then
-		log "ERROR" "System Check Failed: Found $ERRORS critical errors."
-		log "INFO" "Please fix the errors above before continuing."
+		log "ERROR" "System does not meet minimum requirements. Exiting."
 		exit 1
-	elif [[ "$WARNINGS" -gt 0 ]]; then
-		log "WARNING" "System Check Passed with $WARNINGS warnings."
-		if [[ "$IGNORE_WARNINGS" != "y" ]]; then
-			log "INFO" "Performance may be degraded. Press Enter to continue or Ctrl+C to abort."
-			if [[ "$YES" != "1" ]]; then
-				read -r
-			fi
-		fi
-	else
-		log "INFO" "System Check Passed: Your system meets the requirements."
+	elif [[ "$WARNINGS" -eq 0 ]]; then
+		log "INFO" "System requirements met."
+		return
 	fi
+
+	log "WARNING" "System meets minimum but not recommended requirements.\n"
+
+	if [[ "$IGNORE_WARNINGS" ]]; then
+			log "INFO" "'--ignore-warnings' was passed. Continuing with installation."
+			return
+	fi
+
+	# 默认继续（自动选择 y）
+	log "INFO" "Continuing with warnings (default: yes)."
+	# 不再需要用户确认，直接继续
 }
 
 prompt_auto_updates() {
-	if [[ "$AUTO_UPDATE" == "y" ]]; then
-		log "INFO" "Auto-updates enabled via flag."
-		# TODO: implement watchtower or similar mechanism?
-		return
-	fi
-	
-	# Current default is simple: Do nothing special for auto-updates in this script
-	# This function is kept for structural compatibility
+	log "INFO" <<-EOF
+		Your DePIN worker will require periodic updates to ensure that it keeps up with new features and bug fixes.
+		Out-of-date workers may be excluded from the DePIN network and be unable to complete jobs or earn rewards.
+
+		We recommend enabling automatic updates, which take place entirely in the container
+		and do not make any changes to your system.
+		Otherwise, you will need to check the worker logs regularly to see when a new update is available,
+		and apply the update manually.
+
+	EOF
+
+	# 默认启用自动更新（自动选择 Y）
+	log "INFO" "Automatic updates enabled (default: yes)."
+	AUTO_UPDATE=y
+
+	# Blank line
+	echo ""
 }
 
 prompt_continue() {
-	if [[ "$YES" == "1" ]]; then
-		return
-	fi
-
-	log "INFO" "Ready to $SUBCOMMAND Tashi Worker Node."
-	printf "Press Enter to proceed... "
-	read -r
+	# 默认继续（自动选择 Y）
+	log "INFO" "Ready to $SUBCOMMAND worker node. Proceeding (default: yes)."
+	echo ""
 }
 
 display_logo() {
