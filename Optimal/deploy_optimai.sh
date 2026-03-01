@@ -141,7 +141,7 @@ TEMP_FILE="/tmp/optimai-cli-$$"
 DOWNLOAD_URL="https://cli-node.optimai.network/optimai_cli_darwin_universal2"
 rm -f "$TEMP_FILE"
 
-if ! curl -L -f --progress-bar "$DOWNLOAD_URL" -o "$TEMP_FILE"; then
+if ! curl -L -f --http1.1 --retry 3 --progress-bar "$DOWNLOAD_URL" -o "$TEMP_FILE"; then
     echo "❌ 下载失败"
     rm -f "$TEMP_FILE"
     exit 1
