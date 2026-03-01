@@ -135,78 +135,38 @@ elif [ "$device_check_rc" -eq 1 ]; then
 	exit 1
 fi
 
-# 1. 检查是否已安装
-if command -v optimai-cli >/dev/null 2>&1; then
-    # 验证已安装的文件是否有效
-    INSTALLED_PATH=$(which optimai-cli)
-    if [ -f "$INSTALLED_PATH" ] && file "$INSTALLED_PATH" 2>/dev/null | grep -qE "Mach-O|executable"; then
-        # 尝试执行版本命令验证
-        if optimai-cli --version >/dev/null 2>&1; then
-            echo "✅ OptimAI CLI 已安装: $(optimai-cli --version 2>/dev/null || echo '未知版本')"
-            echo "   跳过下载和安装步骤"
-        else
-            echo "⚠️  已安装的文件可能损坏，将重新下载..."
-            sudo rm -f "$INSTALLED_PATH"
-        fi
-    else
-        echo "⚠️  已安装的文件无效，将重新下载..."
-        sudo rm -f "$INSTALLED_PATH" 2>/dev/null || true
-    fi
+# 1. 直接下载并安装 CLI（不检测已有安装）
+echo "📥 下载 OptimAI CLI..."
+TEMP_FILE="/tmp/optimai-cli-$$"
+DOWNLOAD_URL="https://cli-node.optimai.network/optimai_cli_darwin_universal2"
+rm -f "$TEMP_FILE"
+
+if ! curl -L -f --progress-bar "$DOWNLOAD_URL" -o "$TEMP_FILE"; then
+    echo "❌ 下载失败"
+    rm -f "$TEMP_FILE"
+    exit 1
 fi
 
-if ! command -v optimai-cli >/dev/null 2>&1; then
-    # 检测系统架构
-    ARCH=$(uname -m)
-    echo "📥 下载 OptimAI CLI..."
-    echo "   系统架构: $ARCH"
-
-    # 下载文件
-    TEMP_FILE="/tmp/optimai-cli-$$"
-    curl -L -f https://optimai.network/download/cli-node/mac -o "$TEMP_FILE"
-
-    if [ ! -f "$TEMP_FILE" ]; then
-        echo "❌ 下载失败"
-        exit 1
-    fi
-
-    # 验证文件完整性
-    FILE_SIZE=$(wc -c < "$TEMP_FILE" 2>/dev/null || echo "0")
-    if [ "$FILE_SIZE" -lt 1000000 ]; then
-        echo "❌ 下载的文件大小异常: $FILE_SIZE 字节，可能下载不完整"
-        rm -f "$TEMP_FILE"
-        exit 1
-    fi
-
-    # 验证是否为有效的 Mach-O 文件
-    if ! file "$TEMP_FILE" 2>/dev/null | grep -qE "Mach-O|executable"; then
-        echo "❌ 下载的文件不是有效的可执行文件"
-        rm -f "$TEMP_FILE"
-        exit 1
-    fi
-
-    # 设置权限
-    echo "🔧 设置权限..."
-    chmod +x "$TEMP_FILE"
-
-    # 安装到系统路径
-    echo "📦 安装到系统路径..."
-    sudo mv "$TEMP_FILE" /usr/local/bin/optimai-cli
-
-    # 验证安装
-    if command -v optimai-cli >/dev/null 2>&1; then
-        echo "✅ 安装完成"
-    else
-        echo "❌ 安装验证失败"
-        exit 1
-    fi
+if [ ! -f "$TEMP_FILE" ] || [ "$(wc -c < "$TEMP_FILE" 2>/dev/null || echo "0")" -lt 1000000 ]; then
+    echo "❌ 下载文件异常或过小"
+    rm -f "$TEMP_FILE"
+    exit 1
 fi
+
+echo "🔧 设置权限..."
+chmod +x "$TEMP_FILE"
+
+echo "📦 安装到 /usr/local/bin/optimai-cli..."
+sudo mv "$TEMP_FILE" /usr/local/bin/optimai-cli
+
+echo "✅ CLI 安装完成"
 
 # 2. 登录
 echo ""
 echo "🔐 登录 OptimAI 账户..."
 echo "等待输入邮箱进行登录..."
 echo ""
-optimai-cli auth login
+optimai-cli auth login --legacy
 
 # 3. 检查 Docker
 echo ""
