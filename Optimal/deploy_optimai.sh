@@ -135,10 +135,19 @@ elif [ "$device_check_rc" -eq 1 ]; then
 	exit 1
 fi
 
-# 1. 直接下载并安装 CLI（不检测已有安装）
-echo "📥 下载 OptimAI CLI..."
+# 1. 直接下载并安装 Core CLI（跳过外壳以规避 macOS SSL 问题）
+echo "📥 获取最新 OptimAI Core CLI 版本信息..."
+MANIFEST_URL="https://cli-node.optimai.network/darwin-universal2-latest.json"
+CORE_PATH=$(curl -sSL --http1.1 --retry 3 "$MANIFEST_URL" | grep -o '"path": *"[^"]*"' | cut -d'"' -f4)
+
+if [ -z "$CORE_PATH" ]; then
+    echo "❌ 无法获取核心 CLI 版本信息，请检查网络"
+    exit 1
+fi
+
+echo "📥 下载 OptimAI Core CLI..."
 TEMP_FILE="/tmp/optimai-cli-$$"
-DOWNLOAD_URL="https://cli-node.optimai.network/optimai_cli_darwin_universal2"
+DOWNLOAD_URL="https://cli-node.optimai.network/$CORE_PATH"
 rm -f "$TEMP_FILE"
 
 if ! curl -L -f --http1.1 --retry 3 --progress-bar "$DOWNLOAD_URL" -o "$TEMP_FILE"; then
