@@ -162,8 +162,17 @@ if [ ! -f "$TEMP_FILE" ] || [ "$(wc -c < "$TEMP_FILE" 2>/dev/null || echo "0")" 
     exit 1
 fi
 
-echo "🔧 设置权限..."
+echo "🔧 设置运行权限并模拟版本环境..."
 chmod +x "$TEMP_FILE"
+
+# 伪造外壳执行环境，防止 core_cli 报错 "A newer version is required"
+OPTIMAI_DIR="$HOME/.optimai"
+mkdir -p "$OPTIMAI_DIR"
+CORE_VERSION=$(curl -sSL --http1.1 --retry 3 "$MANIFEST_URL" | grep -o '"version": *"[^"]*"' | cut -d'"' -f4)
+if [ -n "$CORE_VERSION" ]; then
+    echo "$CORE_VERSION" > "$OPTIMAI_DIR/optimai_cli_core.version"
+    echo "1" > "$OPTIMAI_DIR/optimai_cli_wrapper.version"
+fi
 
 echo "📦 安装到 /usr/local/bin/optimai-cli..."
 sudo mv "$TEMP_FILE" /usr/local/bin/optimai-cli
